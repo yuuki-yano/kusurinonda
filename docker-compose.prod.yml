@@ -10,12 +10,10 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/kusurinonda
       - SECRET_KEY=your-secret-key-change-this-in-production
-      - PRODUCTION=false
+      - PRODUCTION=true
     depends_on:
       - db
-    volumes:
-      - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
 
   frontend:
     build:
@@ -23,24 +21,21 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8001:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     environment:
       - VITE_API_URL=http://localhost:8000
     depends_on:
       - backend
 
   db:
-    image: postgres:15-alpine
+    image: postgres:15
     environment:
+      - POSTGRES_DB=kusurinonda
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=kusurinonda
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:

@@ -14,10 +14,15 @@ import models
 
 models.Base.metadata.create_all(bind=engine)
 
+# 本番環境ではdocsを無効にする
+is_production = os.getenv("PRODUCTION", "false").lower() == "true"
+
 app = FastAPI(
     title="薬飲み忘れ管理API",
     description="薬を飲んだかどうかを管理するWebアプリのAPI",
     version="1.0.0",
+    docs_url=None if is_production else "/docs",
+    redoc_url=None if is_production else "/redoc",
 )
 
 app.add_middleware(

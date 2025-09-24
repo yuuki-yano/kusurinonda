@@ -42,15 +42,25 @@ git clone <repository-url>
 cd kusurinonda
 ```
 
-2. Docker Composeで起動
+2. Docker Composeで起動（開発環境）
 ```bash
 docker-compose up --build
 ```
 
 3. アクセス
-- フロントエンド: http://localhost:3000
+- フロントエンド: http://localhost:8001
 - バックエンドAPI: http://localhost:8000
-- API仕様書: http://localhost:8000/docs
+- API仕様書（開発環境のみ）: http://localhost:8000/docs
+
+### 本番環境での起動
+```bash
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+本番環境では：
+- API仕様書（/docs、/redoc）は無効化されます
+- ホットリロードは無効になります
+- フロントエンドは http://localhost:8001 でアクセス可能です
 
 ## 使用方法
 
@@ -58,7 +68,7 @@ docker-compose up --build
 管理者ユーザーを作成する場合は、バックエンドAPIを直接呼び出すか、データベースで直接設定してください。
 
 ```bash
-# 管理者ユーザー作成例
+# 管理者ユーザー作成例（開発環境）
 curl -X POST "http://localhost:8000/register" \
   -H "Content-Type: application/json" \
   -d '{
