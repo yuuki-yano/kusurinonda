@@ -65,11 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('API_URL:', API_URL);
       console.log('Login URL:', `${API_URL}/token`);
 
-      const response = await axios.post(`${API_URL}/token`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(`${API_URL}/token`, formData);
       const { access_token } = response.data;
 
       localStorage.setItem('token', access_token);
