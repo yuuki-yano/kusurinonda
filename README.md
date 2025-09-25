@@ -64,19 +64,19 @@ docker-compose -f docker-compose.prod.yml up --build -d
 
 ## 使用方法
 
-### 初期ユーザー作成
-管理者ユーザーを作成する場合は、バックエンドAPIを直接呼び出すか、データベースで直接設定してください。
+### 初期管理者ユーザー作成
+**セキュリティ上の理由により、一般ユーザー登録では管理者ユーザーは作成できません。**
 
-```bash
-# 管理者ユーザー作成例（開発環境）
-curl -X POST "http://localhost:8000/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "admin",
-    "password": "password123",
-    "is_admin": true
-  }'
+管理者ユーザーを作成する場合は、以下の方法を使用してください：
+
+1. **データベース直接操作**（推奨）:
+```sql
+-- PostgreSQLに直接接続して管理者ユーザーを作成
+UPDATE users SET is_admin = true WHERE username = 'your_username';
 ```
+
+2. **既存の管理者ユーザーから作成**:
+管理者パネルの「ユーザー管理」機能を使用
 
 ### 一般ユーザー使用方法
 1. ログイン画面でユーザー名・パスワードを入力

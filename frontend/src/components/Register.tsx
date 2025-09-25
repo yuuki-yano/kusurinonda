@@ -43,7 +43,7 @@ const Register: React.FC = () => {
       await axios.post(`${API_URL}/register`, {
         username,
         password,
-        is_admin: false,  // 常に一般ユーザーとして登録
+        // is_adminフィールドを削除（セキュリティ強化）
       }, {
         headers: {
           'Content-Type': 'application/json',

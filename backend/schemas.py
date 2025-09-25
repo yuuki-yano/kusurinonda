@@ -7,7 +7,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    is_admin: Optional[bool] = False
+    # is_adminフィールドを削除（セキュリティ強化）
 
 class UserResponse(UserBase):
     id: int

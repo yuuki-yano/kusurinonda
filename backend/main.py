@@ -64,10 +64,11 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Username already registered")
     
     hashed_password = get_password_hash(user.password)
+    # セキュリティ: 一般ユーザー登録では常にis_admin=Falseに設定
     db_user = User(
         username=user.username,
         hashed_password=hashed_password,
-        is_admin=user.is_admin if user.is_admin else False
+        is_admin=False  # 常にFalse
     )
     db.add(db_user)
     db.commit()
@@ -77,6 +78,38 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
 @app.get("/users/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+@app.post("/admin/create-user", response_model=UserResponse)
+async def create_admin_user(
+    user_data: dict, 
+    current_user: User = Depends(get_current_user), 
+    db: Session = Depends(get_db)
+):
+    """管理者のみがアクセス可能な管理者ユーザー作成エンドポイント"""
+    if not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    username = user_data.get("username")
+    password = user_data.get("password")
+    is_admin = user_data.get("is_admin", False)
+    
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password are required")
+    
+    db_user = db.query(User).filter(User.username == username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    
+    hashed_password = get_password_hash(password)
+    db_user = User(
+        username=username,
+        hashed_password=hashed_password,
+        is_admin=is_admin
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 @app.get("/users", response_model=list[UserResponse])
 async def read_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
