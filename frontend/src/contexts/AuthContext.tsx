@@ -62,7 +62,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await axios.post(`${API_URL}/token`, formData);
+      console.log('API_URL:', API_URL);
+      console.log('Login URL:', `${API_URL}/token`);
+
+      const response = await axios.post(`${API_URL}/token`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       const { access_token } = response.data;
 
       localStorage.setItem('token', access_token);
@@ -75,6 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return true;
     } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };

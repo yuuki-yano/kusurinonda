@@ -44,6 +44,10 @@ const Register: React.FC = () => {
         username,
         password,
         is_admin: false,  // 常に一般ユーザーとして登録
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       
       setSuccess('ユーザー登録が完了しました。ログイン画面でログインしてください。');
